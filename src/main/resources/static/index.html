@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Comanda do Restaurante</title>
+  <link rel="stylesheet" href="/styles.css?v=6">
+</head>
+<body>
+  <header>
+    <div class="brand"><span>🍽️</span><strong>Comanda</strong></div>
+    <nav>
+      <button class="tab active" data-view="garcom">Garçom</button>
+      <button class="tab" data-view="cozinha">Cozinha</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="garcom" class="view active">
+      <div class="order-panel">
+        <h1>Novo pedido</h1>
+        <div class="mesa-grid">
+          <label>Mesa
+            <input id="mesa" type="number" min="1" placeholder="Ex. 12">
+          </label>
+          <label>Pessoas
+            <input id="pessoas" type="number" min="1" placeholder="Ex. 4">
+          </label>
+        </div>
+        <h2 id="titulo-cardapio">Cardápio</h2>
+        <div id="pratos"></div>
+        <div class="adicionar-mais-wrap">
+          <button id="adicionar-mais" class="adicionar-mais" type="button" aria-label="Adicionar mais pratos">
+            <span aria-hidden="true">+</span>
+          </button>
+        </div>
+      </div>
+      <aside>
+        <h2>Pedido atual</h2>
+        <div id="carrinho" class="carrinho"></div>
+        <label>Observação geral
+          <textarea id="observacao" rows="3" placeholder="Observações do pedido"></textarea>
+        </label>
+        <button id="enviar" class="primary">Enviar para a cozinha</button>
+        <div id="garcom-feedback"></div>
+        <h3>Pedidos prontos</h3>
+        <div id="prontos"></div>
+      </aside>
+    </section>
+
+    <section id="cozinha" class="view">
+      <div class="kitchen-heading">
+        <div><p>Monitor da cozinha</p><h1>Pedidos ativos</h1></div>
+        <span id="relogio"></span>
+      </div>
+      <div id="pedidos-cozinha" class="cozinha-grid"></div>
+    </section>
+  </main>
+
+  <dialog id="prato-modal">
+    <form method="dialog" class="modal-content">
+      <button class="modal-close" value="cancel" aria-label="Fechar">×</button>
+      <img id="modal-imagem" class="modal-imagem" src="" alt="">
+      <div class="modal-body">
+        <p id="modal-categoria" class="modal-categoria"></p>
+        <h2 id="modal-nome"></h2>
+        <p id="modal-descricao"></p>
+        <strong id="modal-preco" class="modal-preco"></strong>
+        <button id="modal-editar" class="edit-dish-button" type="button">Editar prato</button>
+        <div id="modal-edicao" class="modal-edicao" hidden>
+          <label>Nome
+            <input id="editar-nome" type="text" maxlength="100">
+          </label>
+          <label>Preço
+            <div class="price-edit-field">
+              <span>R$</span>
+              <input id="editar-preco" type="text" inputmode="decimal" maxlength="12" placeholder="0,00">
+            </div>
+          </label>
+          <label>Foto (URL)
+            <input id="editar-foto" type="url" placeholder="https://...">
+          </label>
+          <label>Ou escolha uma foto do computador
+            <input id="editar-foto-arquivo" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+          </label>
+          <label>Descrição
+            <textarea id="editar-descricao" rows="2" maxlength="300"></textarea>
+          </label>
+          <label>Categoria
+            <select id="editar-categoria">
+              <option value="">Selecione uma categoria</option>
+              <option value="Bebidas">Bebidas</option>
+              <option value="Entradas">Entradas</option>
+              <option value="Prato principal">Prato principal</option>
+              <option value="Carnes">Carnes</option>
+              <option value="Massas">Massas</option>
+              <option value="Vegetarianos">Vegetarianos</option>
+              <option value="Sobremesas">Sobremesas</option>
+            </select>
+          </label>
+          <button id="modal-salvar" class="save-dish-button" type="button">Salvar alterações</button>
+        </div>
+        <label>Observações do prato
+          <textarea id="modal-observacao" rows="3" maxlength="120"
+            placeholder="Ex. sem cebola, ponto da carne, sem gelo"></textarea>
+        </label>
+        <div class="modal-footer">
+          <div class="modal-quantidade">
+            <button id="modal-menos" type="button" aria-label="Diminuir quantidade">−</button>
+            <strong id="modal-quantidade">1</strong>
+            <button id="modal-mais" type="button" aria-label="Aumentar quantidade">+</button>
+          </div>
+          <button id="modal-adicionar" class="primary" type="button">Adicionar ao pedido</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="novo-prato-modal">
+    <form id="novo-prato-form" class="create-dish-modal">
+      <button class="modal-close" type="button" id="novo-prato-fechar" aria-label="Fechar">×</button>
+      <h2>Adicionar novo prato</h2>
+      <div class="create-dish-grid">
+        <label>Nome do prato
+          <input id="novo-prato-nome" type="text" maxlength="100" required placeholder="Ex. Macarrão à bolonhesa">
+        </label>
+        <label>Preço
+          <div class="price-edit-field">
+            <span>R$</span>
+            <input id="novo-prato-preco" type="text" inputmode="decimal" maxlength="12" required placeholder="0,00">
+          </div>
+        </label>
+        <label>Categoria
+          <select id="novo-prato-categoria" required>
+            <option value="">Selecione uma categoria</option>
+            <option value="Bebidas">Bebidas</option>
+            <option value="Entradas">Entradas</option>
+            <option value="Prato principal">Prato principal</option>
+            <option value="Carnes">Carnes</option>
+            <option value="Massas">Massas</option>
+            <option value="Vegetarianos">Vegetarianos</option>
+            <option value="Sobremesas">Sobremesas</option>
+          </select>
+        </label>
+        <label>Descrição
+          <textarea id="novo-prato-descricao" rows="3" maxlength="300" placeholder="Ingredientes ou detalhes do prato"></textarea>
+        </label>
+        <label>Imagem por URL
+          <input id="novo-prato-imagem-url" type="url" placeholder="https://...">
+        </label>
+        <label>Ou escolha uma foto
+          <input id="novo-prato-foto" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+        </label>
+      </div>
+      <img id="novo-prato-preview" class="create-dish-preview" src="" alt="Prévia da imagem" hidden>
+      <p id="novo-prato-feedback" class="create-dish-feedback"></p>
+      <button id="novo-prato-salvar" class="primary" type="submit">Adicionar prato</button>
+    </form>
+  </dialog>
+
+  <script src="/app.js?v=6"></script>
+</body>
+</html>
